@@ -21,7 +21,7 @@ end
 
 --generation settings
 setting("number", "ymin", -33000) --bottom realm limit
-setting("number", "ymax", -1500) --top realm limit
+setting("number", "ymax", -200) --top realm limit
 setting("number", "tcave", 0.75) --cave threshold
 
 --decoration chances
@@ -30,7 +30,8 @@ setting("number", "stalcha", 0.003) --chance of stalactites
 
 setting("number", "h_lag", 8) --max height for stalagmites
 setting("number", "h_lac", 8) --...stalactites
-setting("number", "crystal", 0.0002) --chance of glow crystal formations
+setting("number", "crystal", 0.0004) --chance of glow crystal formations
+setting("number", "salt_crystal", 0.007) --chance of glow crystal formations
 setting("number", "h_cry", 8) --max height of glow crystals
 setting("number", "h_clac", 8) --max height of glow crystal stalactites
 

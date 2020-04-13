@@ -1,8 +1,24 @@
-# caverealms-lite
+# caverealms-lite-plus
 
-Based on the original minetest-caverealms mod (https://github.com/HeroOfTheWinds/minetest-caverealms/).
+Based on Ezhh's cavereals-lite (https://github.com/Ezhh/caverealms_lite/), itself based on the original minetest-caverealms mod (https://github.com/HeroOfTheWinds/minetest-caverealms/).
 
 Adds underground realms to minetest.
+
+This mod may be used as a drop-in replacement for caverealms-lite. Newly generated blocks will show a sharp lurch in the biome type.
+
+
+## Changes from caverealms-lite
+
+* Different biome algorithm based on independent Evil and Wonder noises, similar to heat and humidity above ground.
+* Biomes are larger.
+* Every biome has some sort of consistent light source
+* New biome type: geothermal hotsprings.
+* A few more node types similar to existing ones.
+* Various bug fixes.
+* Various new bugs ;)
+
+
+## Changes by Ezhh from caverealms to caverealms-lite
 
 This caverealms fork provides all the biomes and decorations from the original caverealms, with several additions and without the overhead of generating caves. This lowers the server resources the mod requires, for example CPU and RAM. This also removes the large lava spills created by the original caverealms.
 
@@ -17,8 +33,9 @@ Source code: FreeBSD License (Simplified)
 The original caverealms was licensed as WTFPL.
 
 Contributors:
-- Zeno, Shara RedCat - This rewrite
-- HeroOfTheWinds, Zeno - Original mod
+- yzziizzy - current version
+- Zeno, Shara RedCat - caverealms-lite
+- HeroOfTheWinds, Zeno - Original caverealms mod
 
 
 ## Recommended Additions

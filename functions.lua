@@ -102,7 +102,7 @@ function caverealms:stalactite(x,y,z, area, data)
 end
 
 --glowing crystal stalagmite spawner
-function caverealms:crystal_stalagmite(x,y,z, area, data, biome)
+function caverealms:crystal_stalagmite(x,y,z, area, data, ore, crystal, base)
 
 	if not caverealms:below_solid(x,y,z,area,data) then
 		return
@@ -110,69 +110,10 @@ function caverealms:crystal_stalagmite(x,y,z, area, data, biome)
 	
 	--contest ids
 	local c_stone = minetest.get_content_id("default:stone")
-	local c_crystal = minetest.get_content_id("caverealms:glow_crystal")
-	local c_crystore = minetest.get_content_id("caverealms:glow_ore")
-	local c_emerald = minetest.get_content_id("caverealms:glow_emerald")
-	local c_emore = minetest.get_content_id("caverealms:glow_emerald_ore")
-	local c_mesecry = minetest.get_content_id("caverealms:glow_mese")
-	local c_meseore = minetest.get_content_id("default:stone_with_mese")
-	local c_ruby = minetest.get_content_id("caverealms:glow_ruby")
-	local c_rubore = minetest.get_content_id("caverealms:glow_ruby_ore")
-	local c_ameth = minetest.get_content_id("caverealms:glow_amethyst")
-	local c_amethore = minetest.get_content_id("caverealms:glow_amethyst_ore")
-	local c_ice = minetest.get_content_id("default:ice")
-	local c_thinice = minetest.get_content_id("caverealms:thin_ice")
 
-	--for randomness
-	local mode = 1
-	if math.random(15) == 1 then
-		mode = 2
-	end
-	if biome == 3 then
-		if math.random(25) == 1 then
-			mode = 2
-		else
-			mode = 1
-		end
-	end
-	if biome == 4 or biome == 5 then
-		if math.random(3) == 1 then
-			mode = 2
-		end
-	end
-
-	local stalids = {
- 		{ {c_crystore, c_crystal}, {c_emore, c_emerald} },
- 		{ {c_emore, c_emerald}, {c_crystore, c_crystal} },
- 		{ {c_emore, c_emerald}, {c_meseore, c_mesecry} },
- 		{ {c_ice, c_thinice}, {c_crystore, c_crystal}},
-		{ {c_ice, c_thinice}, {c_crystore, c_crystal}},
-		{ {c_rubore, c_ruby}, {c_meseore, c_mesecry}},
-		{ {c_crystore, c_crystal}, {c_rubore, c_ruby} },
-		{ {c_rubore, c_ruby}, {c_emore, c_emerald}},
-		{ {c_amethore, c_ameth}, {c_meseore, c_mesecry} },
- 	}
-
- 	local nid_a
- 	local nid_b
-	local nid_s = c_stone --stone base, will be rewritten to ice in certain biomes
-
- 	if biome > 3 and biome < 6 then
- 		if mode == 1 then
- 			nid_a = c_ice
-			nid_b = c_thinice
-			nid_s = c_ice
- 		else
- 			nid_a = c_crystore
-			nid_b = c_crystal
- 		end
- 	elseif mode == 1 then
- 		nid_a = stalids[biome][1][1]
- 		nid_b = stalids[biome][1][2]
- 	else
- 		nid_a = stalids[biome][2][1]
- 		nid_b = stalids[biome][2][2]
- 	end
+ 	local nid_a = ore -- ore
+ 	local nid_b = crystal -- crystal
+	local nid_s = base or c_stone --base  --stone base, will be rewritten to ice in certain biomes
 
 	local top = math.random(5,H_CRY) --grab a random height for the stalagmite
 	for j = 0, top do --y
@@ -203,7 +144,7 @@ function caverealms:crystal_stalagmite(x,y,z, area, data, biome)
 end
 
 --crystal stalactite spawner
-function caverealms:crystal_stalactite(x,y,z, area, data, biome)
+function caverealms:crystal_stalactite(x,y,z, area, data, ore, cry, base)
 
 	if not caverealms:above_solid(x,y,z,area,data) then
 		return
@@ -211,69 +152,10 @@ function caverealms:crystal_stalactite(x,y,z, area, data, biome)
 
 	--contest ids
 	local c_stone = minetest.get_content_id("default:stone")
-	local c_crystore = minetest.get_content_id("caverealms:glow_ore")
-	local c_crystal = minetest.get_content_id("caverealms:glow_crystal")
-	local c_emerald = minetest.get_content_id("caverealms:glow_emerald")
-	local c_emore = minetest.get_content_id("caverealms:glow_emerald_ore")
-	local c_mesecry = minetest.get_content_id("caverealms:glow_mese")
-	local c_meseore = minetest.get_content_id("default:stone_with_mese")
-	local c_ruby = minetest.get_content_id("caverealms:glow_ruby")
-	local c_rubore = minetest.get_content_id("caverealms:glow_ruby_ore")
-	local c_ameth = minetest.get_content_id("caverealms:glow_amethyst")
-	local c_amethore = minetest.get_content_id("caverealms:glow_amethyst_ore")
-	local c_ice = minetest.get_content_id("default:ice")
-	local c_thinice = minetest.get_content_id("caverealms:hanging_thin_ice")
-
-	--for randomness
-	local mode = 1
-	if math.random(15) == 1 then
-		mode = 2
-	end
-	if biome == 3 then
-		if math.random(25) == 1 then
-			mode = 2
-		else
-			mode = 1
-		end
-	end
-	if biome == 4 or biome == 5 then
-		if math.random(3) == 1 then
-			mode = 2
-		end
-	end
-
-	local stalids = {
- 		{ {c_crystore, c_crystal}, {c_emore, c_emerald} },
- 		{ {c_emore, c_emerald}, {c_crystore, c_crystal} },
- 		{ {c_emore, c_emerald}, {c_meseore, c_mesecry} },
- 		{ {c_ice, c_thinice}, {c_crystore, c_crystal}},
-		{ {c_ice, c_thinice}, {c_crystore, c_crystal}},
-		{ {c_rubore, c_ruby}, {c_meseore, c_mesecry}},
-		{ {c_crystore, c_crystal}, {c_rubore, c_ruby} },
-		{ {c_rubore, c_ruby}, {c_emore, c_emerald}},
-		{ {c_amethore, c_ameth}, {c_meseore, c_mesecry} },
- 	}
-
- 	local nid_a
- 	local nid_b
-	local nid_s = c_stone --stone base, will be rewritten to ice in certain biomes
-
- 	if biome > 3 and biome < 6 then
- 		if mode == 1 then
- 			nid_a = c_ice
-			nid_b = c_thinice
-			nid_s = c_ice
- 		else
- 			nid_a = c_crystore
-			nid_b = c_crystal
- 		end
- 	elseif mode == 1 then
- 		nid_a = stalids[biome][1][1]
- 		nid_b = stalids[biome][1][2]
- 	else
- 		nid_a = stalids[biome][2][1]
- 		nid_b = stalids[biome][2][2]
- 	end
+	
+ 	local nid_a = ore
+ 	local nid_b = cry
+	local nid_s = base or c_stone --stone base, will be rewritten to ice in certain biomes
 
 	local bot = math.random(-H_CLAC, -6) --grab a random height for the stalagmite
 	for j = bot, 0 do --y
@@ -304,25 +186,26 @@ function caverealms:crystal_stalactite(x,y,z, area, data, biome)
 end
 
 --glowing crystal stalagmite spawner
-function caverealms:salt_stalagmite(x,y,z, area, data, biome)
+function caverealms:salt_stalagmite(x,y,z, area, data)
 
 	if not caverealms:below_solid(x,y,z,area,data) then
 		return
 	end
 	
 	--contest ids
-	local c_stone = minetest.get_content_id("default:stone")
+-- 	local c_stone = minetest.get_content_id("default:stone")
 	local c_salt = minetest.get_content_id("caverealms:salt_crystal")
+	local c_salt_stone = minetest.get_content_id("caverealms:stone_with_salt")
 	
 	local scale = math.random(2, 4)
 	if scale == 2 then
 		for j = -3, 3 do
 			for k = -3, 3 do
 				local vi = area:index(x+j, y, z+k)
-				data[vi] = c_stone
+				data[vi] = c_salt_stone
 				if math.abs(j) ~= 3 and math.abs(k) ~= 3 then
 					local vi = area:index(x+j, y+1, z+k)
-					data[vi] = c_stone
+					data[vi] = c_salt_stone
 				end
 			end
 		end
@@ -330,10 +213,10 @@ function caverealms:salt_stalagmite(x,y,z, area, data, biome)
 		for j = -4, 4 do
 			for k = -4, 4 do
 				local vi = area:index(x+j, y, z+k)
-				data[vi] = c_stone
+				data[vi] = c_salt_stone
 				if math.abs(j) ~= 4 and math.abs(k) ~= 4 then
 					local vi = area:index(x+j, y+1, z+k)
-					data[vi] = c_stone
+					data[vi] = c_salt_stone
 				end
 			end
 		end

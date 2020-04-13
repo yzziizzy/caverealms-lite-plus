@@ -54,6 +54,20 @@ minetest.register_node("caverealms:glow_ruby", {
 	sunlight_propagates = true,
 })
 
+--glowing citrine
+minetest.register_node("caverealms:glow_citrine", {
+	description = "Glow Citrine",
+	tiles = {"caverealms_glow_citrine.png"},
+	is_ground_content = true,
+	groups = {cracky=3},
+	sounds = default.node_sound_glass_defaults(),
+	light_source = 13,
+	paramtype = "light",
+	use_texture_alpha = true,
+	drawtype = "glasslike",
+	sunlight_propagates = true,
+})
+
 --glowing amethyst
 minetest.register_node("caverealms:glow_amethyst", {
 	description = "Glow Amethyst",
@@ -94,6 +108,17 @@ minetest.register_node("caverealms:glow_emerald_ore", {
 minetest.register_node("caverealms:glow_ruby_ore", {
 	description = "Glow Ruby Ore",
 	tiles = {"caverealms_glow_ruby_ore.png"},
+	is_ground_content = true,
+	groups = {cracky=2},
+	sounds = default.node_sound_glass_defaults(),
+	light_source = 10,
+	paramtype = "light",
+})
+
+--embedded citrine
+minetest.register_node("caverealms:glow_citrine_ore", {
+	description = "Glow Citrine Ore",
+	tiles = {"caverealms_glow_citrine_ore.png"},
 	is_ground_content = true,
 	groups = {cracky=2},
 	sounds = default.node_sound_glass_defaults(),
@@ -211,7 +236,7 @@ minetest.register_node("caverealms:icicle_up", {
 	inventory_image = "caverealms_icicle_up.png",
 	wield_image = "caverealms_icicle_up.png",
 	is_ground_content = true,
-	groups = {cracky=3, oddly_breakable_by_hand=1},
+	groups = {cracky=3, oddly_breakable_by_hand=1, attached_node = 1},
 	sounds = default.node_sound_glass_defaults(),
 	light_source = 8,
 	paramtype = "light",
@@ -232,7 +257,7 @@ minetest.register_node("caverealms:icicle_down", {
 	inventory_image = "caverealms_icicle_down.png",
 	wield_image = "caverealms_icicle_down.png",
 	is_ground_content = true,
-	groups = {cracky=3, oddly_breakable_by_hand=1},
+	groups = {cracky=3, oddly_breakable_by_hand=1, attached_node = 1},
 	sounds = default.node_sound_glass_defaults(),
 	light_source = 8,
 	paramtype = "light",
@@ -252,7 +277,7 @@ minetest.register_node("caverealms:stone_with_moss", {
 	tiles = {"default_cobble.png^caverealms_moss.png", "default_cobble.png", "default_cobble.png^caverealms_moss_side.png"},
 	is_ground_content = true,
 	groups = {crumbly=1, cracky=3},
-	drop = 'default:cobble',
+-- 	drop = 'default:cobble',
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name="default_grass_footstep", gain=0.25},
 	}),
@@ -264,7 +289,7 @@ minetest.register_node("caverealms:stone_with_lichen", {
 	tiles = {"default_cobble.png^caverealms_lichen.png", "default_cobble.png", "default_cobble.png^caverealms_lichen_side.png"},
 	is_ground_content = true,
 	groups = {crumbly=1, cracky=3},
-	drop = 'default:cobble',
+-- 	drop = 'default:cobble',
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name="default_grass_footstep", gain=0.25},
 	}),
@@ -276,7 +301,7 @@ minetest.register_node("caverealms:stone_with_algae", {
 	tiles = {"default_cobble.png^caverealms_algae.png", "default_cobble.png", "default_cobble.png^caverealms_algae_side.png"},
 	is_ground_content = true,
 	groups = {crumbly=1, cracky=3},
-	drop = 'default:cobble',
+-- 	drop = 'default:cobble',
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name="default_grass_footstep", gain=0.25},
 	}),
@@ -301,7 +326,7 @@ minetest.register_node("caverealms:hot_cobble", {
 	description = "Hot Cobble",
 	tiles = {"caverealms_hot_cobble.png"},
 	is_ground_content = true,
-	groups = {cracky=1, hot=1, unbreakable = 1},
+	groups = {cracky=1, hot=1, cobble = 1, stone = 1},
 	damage_per_second = 1,
 	light_source = 3,
 	paramtype = "light",
@@ -400,7 +425,7 @@ minetest.register_node("caverealms:glow_worm", {
 	inventory_image = "caverealms_glow_worm.png",
 	wield_image = "caverealms_glow_worm.png",
 	is_ground_content = true,
-	groups = {oddly_breakable_by_hand=3},
+	groups = {oddly_breakable_by_hand=3, attached_node = 1},
 	light_source = 9,
 	paramtype = "light",
 	drawtype = "plantlike",
@@ -419,7 +444,26 @@ minetest.register_node("caverealms:glow_worm_green", {
 	inventory_image = "caverealms_glow_worm_green.png",
 	wield_image = "caverealms_glow_worm_green.png",
 	is_ground_content = true,
-	groups = {oddly_breakable_by_hand=3},
+	groups = {oddly_breakable_by_hand=3, attached_node = 1},
+	light_source = 9,
+	paramtype = "light",
+	drawtype = "plantlike",
+	walkable = false,
+	buildable_to = true,
+	visual_scale = 1.0,
+	selection_box = {
+		type = "fixed",
+		fixed = {-1/6, -1/2, -1/6, 1/6, 1/2, 1/6},
+	},
+})
+
+minetest.register_node("caverealms:glow_worm_red", {
+	description = "Red Glow Worms",
+	tiles = {"caverealms_glow_worm_red.png"},
+	inventory_image = "caverealms_glow_worm_red.png",
+	wield_image = "caverealms_glow_worm_red.png",
+	is_ground_content = true,
+	groups = {oddly_breakable_by_hand=3, attached_node = 1},
 	light_source = 9,
 	paramtype = "light",
 	drawtype = "plantlike",
@@ -439,7 +483,7 @@ minetest.register_node("caverealms:fire_vine", {
 	wield_image = "caverealms_fire_vine.png",
 	is_ground_content = true,
 	damage_per_second = 1,
-	groups = {oddly_breakable_by_hand=3},
+	groups = {oddly_breakable_by_hand=3, attached_node = 1},
 	light_source = 9,
 	paramtype = "light",
 	drawtype = "plantlike",
@@ -464,6 +508,23 @@ minetest.register_node("caverealms:constant_flame", {
 	inventory_image = "fire_basic_flame.png",
 	light_source = 14,
 	groups = {igniter=2, dig_immediate=3, hot=3, not_in_creative_inventory=1},
+	paramtype = "light",
+	drop = '',
+	walkable = false,
+	buildable_to = true,
+	damage_per_second = 4,
+})
+
+minetest.register_node("caverealms:constant_flame_blue", {
+	description = "Blue Fire",
+	drawtype = "plantlike",
+	tiles = {{
+		name="caverealms_blue_flame_animated.png",
+		animation={type="vertical_frames", aspect_w=16, aspect_h=16, length=1},
+	}},
+	inventory_image = "fire_basic_flame.png",
+	light_source = 14,
+	groups = {dig_immediate=3, not_in_creative_inventory=1},
 	paramtype = "light",
 	drop = '',
 	walkable = false,
