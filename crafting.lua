@@ -59,6 +59,42 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craftitem("caverealms:glow_obsidian_shard", {
+	description = "Glow Obsidian Shard",
+	inventory_image = "caverealms_glow_obsidian_shard.png",
+})
+
+minetest.register_craft({
+	output = "caverealms:glow_obsidian_shard 9",
+	type = "shapeless",
+	recipe = {"caverealms:glow_obsidian"},
+})
+
+minetest.register_craft({
+	output = "caverealms:glow_obsidian_shard 9",
+	type = "shapeless",
+	recipe = {"caverealms:glow_obsidian_2"},
+})
+
+
+minetest.register_craft({
+	output = "caverealms:glow_obsidian",
+	recipe = {
+		{"caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard"},
+		{"caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard"},
+		{"caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard", "caverealms:glow_obsidian_shard"},
+	}
+})
+
+
+minetest.register_craft({
+	type = "cooking",
+	output = "caverealms:glow_obsidian_glass",
+	recipe = "caverealms:glow_obsidian_shard",
+})
+
+
+
 -- Requires ethereal:fish_raw
 if minetest.get_modpath("ethereal") then
 
