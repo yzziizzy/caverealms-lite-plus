@@ -93,7 +93,7 @@ minetest.register_node("caverealms:mushroom_gills", {
 	tiles = {"caverealms_mushroom_gills.png"},
 	is_ground_content = true,
 	light_source = 10,
-	groups = {choppy=2, attached_node = 1, oddly_breakable_by_hand=1},
+	groups = {choppy=2,  oddly_breakable_by_hand=1},
 	drawtype = "plantlike",
 	paramtype = "light",
 })
