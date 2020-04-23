@@ -564,6 +564,47 @@ minetest.register_node("caverealms:dm_statue", {
 })
 
 
+minetest.register_node("caverealms:butterfly_blue", {
+	description = desc,
+	drawtype = "plantlike",
+	tiles = {{
+		name = "caverealms_butterfly_blue_animated.png",
+		animation = {
+			type = "vertical_frames",
+			aspect_w = 32,
+			aspect_h = 32,
+			length = 3
+		},
+	}},
+	inventory_image = "caverealms_butterfly_blue.png",
+	wield_image =  "caverealms_butterfly_blue.png",
+	waving = 1,
+	paramtype = "light",
+	sunlight_propagates = true,
+	buildable_to = true,
+	walkable = false,
+	groups = {catchable = 1},
+	light_source = 6,
+	selection_box = {
+		type = "fixed",
+		fixed = {-0.1, -0.1, -0.1, 0.1, 0.1, 0.1},
+	},
+	floodable = true,
+	on_place = function(itemstack, placer, pointed_thing)
+		local player_name = placer:get_player_name()
+		local pos = pointed_thing.above
+
+		if not minetest.is_protected(pos, player_name) and
+				not minetest.is_protected(pointed_thing.under, player_name) and
+				minetest.get_node(pos).name == "air" then
+			minetest.set_node(pos, {name = "caverealms:butterfly_blue"})
+			itemstack:take_item()
+		end
+		return itemstack
+	end,
+})
+
+
 -- Compatibility
 minetest.register_alias("caverealms:hanging_thin_ice", "caverealms:thin_ice")
 

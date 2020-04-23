@@ -2,7 +2,7 @@ caverealms = {} --create a container for functions and constants
 
 --grab a shorthand for the filepath of the mod
 local modpath = minetest.get_modpath(minetest.get_current_modname())
---[[
+-- [[
 -- debug privileges
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
@@ -20,7 +20,7 @@ minetest.register_on_joinplayer(function(player)
 		player:set_pos({x=0, y=-20000, z= 0})
 	end
 end)
-]]
+--]]
 
 
 --load companion lua files
@@ -142,6 +142,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_flame = minetest.get_content_id("caverealms:constant_flame")
 	local c_bflame = minetest.get_content_id("caverealms:constant_flame_blue")
 	local c_firefly = minetest.get_content_id("fireflies:firefly")
+	local c_bluefly = minetest.get_content_id("caverealms:butterfly_blue")
 	
 	-- crystals
 	local c_crystore = minetest.get_content_id("caverealms:glow_ore")
@@ -209,234 +210,244 @@ minetest.register_on_generated(function(minp, maxp, seed)
 			local vi = area:index(x0, y, z)
 			for x = x0, x1 do -- for each node do
 				
-				--determine biome
-				local biome = 0 --preliminary declaration
-				local n_biome_e = nvals_biome_e[nixz]   --make an easier reference to the noise
-				local n_biome_w = nvals_biome_w[nixz]   --make an easier reference to the noise
-				local n_biome = (n_biome_e + n_biome_w) / 2
-				
-				local floor = c_hcobble
-				local floor_depth = 1
-				local worms = {}
-				local worm_max_len = 1
-				local no_mites = false
-				local no_tites = false
-				local do_hotspring = false
-				local decos = {}
-				local decos2 = {}
-				local deco_mul = 1
-				
-				local wiggle = (math.random() - 0.5) / 20
-				n_biome_e = n_biome_e + wiggle
-				n_biome_w = n_biome_w + wiggle
-				
-				if n_biome_e < -0.33 then
-					if n_biome_w < -0.33 then -- algae
-						floor = c_algae
-						worms = {c_worm_green}
-						worm_max_len = 3
-						decos = {c_mycena, c_firefly}
-					elseif n_biome_w < 0.33 then -- moss
-						floor = c_moss
-						worms = {c_worm_green, c_worm_blue}
-						worm_max_len = 3
-						decos = {c_mycena}
-						deco_mul = 2.0
-					else -- lichen
-						floor = c_lichen
-						worms = {c_worm_blue}
-						worm_max_len = 3
-						decos = {c_mycena, c_fungus, c_fungus}
-						deco_mul = 3.3
-					end
-				elseif n_biome_e < 0.33 then
-					if n_biome_w < -0.33 then -- desert
-						
-						if math.random() < 0.05 then
-							floor = c_coalblock
-						elseif math.random() < 0.15 then
-							floor = c_coaldust
-						else
-							floor = c_desand
-						end
-						floor_depth = 2
-						
-						worms = {c_worm_red}
-						worm_max_len = 1
-						decos = {c_flame, c_spike}
-					elseif n_biome_w < 0.33 then -- salt
-						floor = c_salt
-						floor_depth = 2
-						worms = {c_icid}
-						worm_max_len = 1
-						no_mites = true
-						
-						decos = {c_saltgem}
-					else -- glacial
-						floor = c_thinice
-						floor_depth = 2
-						worms = {c_icid}
-						worm_max_len = 1
-						
-						decos = {c_gem}
-					end
-				else
-					if n_biome_w < -0.33 then -- hotspring
-						floor = c_hcobble
-						worms = {c_icid}
-						worm_max_len = 1
-						if math.random() < 0.005 then
-							do_hotspring = true
-						end
-						decos = {c_fire_vine}
-						deco_mul = 0.7
-					elseif n_biome_w < 0.33 then -- dungeon
-						if math.random() < 0.5 then
-							floor = c_gobsidian
-						else
-							floor = c_gobsidian2
-						end
-						worms = {c_worm_red}
-						worm_max_len = 4
-						decos = {c_flame, c_flame, c_fire_vine}
-					else -- deep glacial
-						floor = c_ice
-						floor_depth = 3
-						worms = {c_icid}
-						worm_max_len = 1
-						
-						decos = {c_bflame}
-					end
-				end
-				
-				
-				
-				
 				local ai = area:index(x,y+1,z) --above index
 				local bi = area:index(x,y-1,z) --below index
 				
+				local mode = 0 -- nothing, 1 = ground, 2 = ceiling
 				
-				-- place floor
-				if data[bi] == c_stone and data[vi] == c_air then --ground
-					for i = 1,floor_depth do
-						local ii = area:index(x,y-i,z)
-						if data[ii] == c_stone then
-							data[ii] = floor
-						end
-					end
-					
-					if do_hotspring == true then
-						caverealms:spawn_hotspring(x,y,z, area, data, math.random(4) + 2)
-					end
-					
-					-- decorations
-					if math.random() < ICICHA * deco_mul and data[bi] ~= c_hotspring then
-						data[vi] = decos[math.random(1, #decos)]
-					end
-					
-					-- salt crystals
-					if floor == c_salt and math.random() < SALTCRYCHA then
-						caverealms:salt_stalagmite(x,y,z, area, data)
-					end
-					
-					-- stone stalagmites
-					if math.random() < STAGCHA then
-						caverealms:stalagmite(x,y,z, area, data)
-					end
-					
-					-- crystal stalagmites
-					if not no_mites and math.random() < CRYSTAL then
-						local ore
-						local cry
-						
-						if n_biome_e < 0 then -- non-evil
-							if n_biome_w < -0.33 then
-								ore = c_crystore
-								cry = c_crystal
-							elseif n_biome_w < 0.33 then
-								ore = c_emore
-								cry = c_emerald
-							else
-								ore = c_amethore
-								cry = c_ameth
-							end
-						elseif n_biome_e < 0.4 then -- moderately evil 
-							if n_biome_w < 0 then
-								ore = c_meseore
-								cry = c_mesecry
-							else
-								ore = c_citore
-								cry = c_citrine
-							end
-						else -- very evil
-							ore = c_rubore
-							cry = c_ruby
-						end
-						
-						local base = floor
-						caverealms:crystal_stalagmite(x,y,z, area, data, ore, cry, base)
-					end
-					
-					
-					if n_biome_w > 0.5 and n_biome_e < -0.33 and math.random() < GIANTCHA then --giant mushrooms
-						caverealms:giant_shroom(x, y, z, area, data)
-					end
-					
-					-- temporary light
-					if math.random() < FLACHA then --neverending flames
-						--data[vi] = c_flame
+				if data[vi] == c_air then
+					if data[bi] == c_stone then --ground
+						mode = 1
+					elseif data[ai] == c_stone and y < y1 then -- ceiling
+						mode = 2
 					end
 				end
 				
-				-- place ceiling
-				if data[ai] == c_stone and data[vi] == c_air and y < y1 then
-					if math.random() < ICICHA then
-						local worm = worms[math.random(1,#worms)]
-						local wdepth = math.random(1, worm_max_len)
-						for i = 0,wdepth-1 do
+				
+				if mode > 0 then
+					local a2i = area:index(x,y+2,z) --above index
+					
+					--determine biome
+					local biome = 0 --preliminary declaration
+					local n_biome_e = nvals_biome_e[nixz]   --make an easier reference to the noise
+					local n_biome_w = nvals_biome_w[nixz]   --make an easier reference to the noise
+					local n_biome = (n_biome_e + n_biome_w) / 2
+					
+					local floor = c_hcobble
+					local floor_depth = 1
+					local worms = {}
+					local worm_max_len = 1
+					local no_mites = false
+					local no_tites = false
+					local decos = {}
+					local decos2 = {}
+					local deco_mul = 1
+					
+					local wiggle = (math.random() - 0.5) / 20
+					n_biome_e = n_biome_e + wiggle
+					n_biome_w = n_biome_w + wiggle
+					
+					if n_biome_e < -0.33 then
+						if n_biome_w < -0.33 then -- algae
+							floor = c_algae
+							worms = {c_worm_green}
+							worm_max_len = 3
+							decos = {c_mycena}
+						elseif n_biome_w < 0.33 then -- moss
+							floor = c_moss
+							worms = {c_worm_green, c_worm_blue}
+							worm_max_len = 3
+							decos = {c_mycena}
+							deco_mul = 2.0
+							if mode == 1 and data[ai] == c_air and math.random() < 0.01 then
+								data[ai] = c_firefly
+							end
+						else -- lichen
+							floor = c_lichen
+							worms = {c_worm_blue}
+							worm_max_len = 3
+							decos = {c_mycena, c_fungus, c_fungus}
+							deco_mul = 3.3
+							if mode == 1 and data[ai] == c_air and math.random() < 0.003 then
+								data[ai] = c_bluefly
+							end
+						end
+					elseif n_biome_e < 0.33 then
+						if n_biome_w < -0.33 then -- desert
+							
+							if math.random() < 0.05 then
+								floor = c_coalblock
+							elseif math.random() < 0.15 then
+								floor = c_coaldust
+							else
+								floor = c_desand
+							end
+							floor_depth = 2
+							
+							worms = {c_worm_red}
+							worm_max_len = 1
+							decos = {c_flame, c_spike}
+						elseif n_biome_w < 0.33 then -- salt
+							floor = c_salt
+							floor_depth = 2
+							worms = {c_icid}
+							worm_max_len = 1
+							no_mites = true
+							
+							decos = {c_saltgem}
+						else -- glacial
+							floor = c_thinice
+							floor_depth = 2
+							worms = {c_icid}
+							worm_max_len = 1
+							
+							decos = {c_gem}
+						end
+					else
+						if n_biome_w < -0.33 then -- hotspring
+							floor = c_hcobble
+							worms = {c_icid}
+							worm_max_len = 1
+							if mode == 1 and math.random() < 0.005 then
+								caverealms:spawn_hotspring(x,y,z, area, data, math.random(4) + 2)
+							end
+							decos = {c_fire_vine}
+							deco_mul = 0.7
+						elseif n_biome_w < 0.33 then -- dungeon
+							if math.random() < 0.5 then
+								floor = c_gobsidian
+							else
+								floor = c_gobsidian2
+							end
+							worms = {c_worm_red}
+							worm_max_len = 4
+							decos = {c_flame, c_flame, c_fire_vine}
+						else -- deep glacial
+							floor = c_ice
+							floor_depth = 3
+							worms = {c_icid}
+							worm_max_len = 1
+							
+							decos = {c_bflame}
+						end
+					end
+					
+					
+					
+					
+					
+					
+					-- place floor
+					if mode == 1 then --ground
+						for i = 1,floor_depth do
 							local ii = area:index(x,y-i,z)
-							if data[ii] == c_air then
-								data[ii] = worm
+							if data[ii] == c_stone then
+								data[ii] = floor
 							end
 						end
-					end
-					
-					
-					-- stalactites
-					if not no_tites and math.random() < CRYSTAL then
-						local ore
-						local cry
 						
-						if n_biome_e < 0 then -- non-evil
-							if n_biome_w < -0.33 then
-								ore = c_crystore
-								cry = c_crystal
-							elseif n_biome_w < 0.33 then
-								ore = c_emore
-								cry = c_emerald
-							else
-								ore = c_amethore
-								cry = c_ameth
-							end
-						elseif n_biome_e < 0.4 then -- moderately evil 
-							if n_biome_w < 0 then
-								ore = c_meseore
-								cry = c_mesecry
-							else
-								ore = c_citore
-								cry = c_citrine
-							end
-						else -- very evil
-							ore = c_rubore
-							cry = c_ruby
+						-- decorations
+						if math.random() < ICICHA * deco_mul and data[bi] ~= c_hotspring then
+							data[vi] = decos[math.random(1, #decos)]
 						end
 						
-						local base = c_stone
-						caverealms:crystal_stalactite(x,y,z, area, data, ore, cry, base)
-					end
+						-- salt crystals
+						if floor == c_salt and math.random() < SALTCRYCHA then
+							caverealms:salt_stalagmite(x,y,z, area, data)
+						end
+						
+						-- stone stalagmites
+						if math.random() < STAGCHA then
+							caverealms:stalagmite(x,y,z, area, data)
+						end
+						
+						-- crystal stalagmites
+						if not no_mites and math.random() < CRYSTAL then
+							local ore
+							local cry
+							
+							if n_biome_e < 0 then -- non-evil
+								if n_biome_w < -0.33 then
+									ore = c_crystore
+									cry = c_crystal
+								elseif n_biome_w < 0.33 then
+									ore = c_emore
+									cry = c_emerald
+								else
+									ore = c_amethore
+									cry = c_ameth
+								end
+							elseif n_biome_e < 0.4 then -- moderately evil 
+								if n_biome_w < 0 then
+									ore = c_meseore
+									cry = c_mesecry
+								else
+									ore = c_citore
+									cry = c_citrine
+								end
+							else -- very evil
+								ore = c_rubore
+								cry = c_ruby
+							end
+							
+							local base = floor
+							caverealms:crystal_stalagmite(x,y,z, area, data, ore, cry, base)
+						end
+						
+						
+						if n_biome_w > 0.5 and n_biome_e < -0.33 and math.random() < GIANTCHA then --giant mushrooms
+							caverealms:giant_shroom(x, y, z, area, data)
+						end
+						
 					
+					elseif mode == 2 then -- place ceiling
+						if math.random() < ICICHA then
+							local worm = worms[math.random(1,#worms)]
+							local wdepth = math.random(1, worm_max_len)
+							for i = 0,wdepth-1 do
+								local ii = area:index(x,y-i,z)
+								if data[ii] == c_air then
+									data[ii] = worm
+								end
+							end
+						end
+						
+						
+						-- stalactites
+						if not no_tites and math.random() < CRYSTAL then
+							local ore
+							local cry
+							
+							if n_biome_e < 0 then -- non-evil
+								if n_biome_w < -0.33 then
+									ore = c_crystore
+									cry = c_crystal
+								elseif n_biome_w < 0.33 then
+									ore = c_emore
+									cry = c_emerald
+								else
+									ore = c_amethore
+									cry = c_ameth
+								end
+							elseif n_biome_e < 0.4 then -- moderately evil 
+								if n_biome_w < 0 then
+									ore = c_meseore
+									cry = c_mesecry
+								else
+									ore = c_citore
+									cry = c_citrine
+								end
+							else -- very evil
+								ore = c_rubore
+								cry = c_ruby
+							end
+							
+							local base = c_stone
+							caverealms:crystal_stalactite(x,y,z, area, data, ore, cry, base)
+						end
+						
+					end
 				end
-				
 				
 				nixyz2 = nixyz2 + 1
 				nixz = nixz + 1
