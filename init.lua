@@ -141,6 +141,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_icid = minetest.get_content_id("caverealms:icicle_down")
 	local c_flame = minetest.get_content_id("caverealms:constant_flame")
 	local c_bflame = minetest.get_content_id("caverealms:constant_flame_blue")
+	local c_firefly = minetest.get_content_id("fireflies:firefly")
 	
 	-- crystals
 	local c_crystore = minetest.get_content_id("caverealms:glow_ore")
@@ -222,6 +223,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				local no_tites = false
 				local do_hotspring = false
 				local decos = {}
+				local decos2 = {}
 				local deco_mul = 1
 				
 				local wiggle = (math.random() - 0.5) / 20
@@ -233,7 +235,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						floor = c_algae
 						worms = {c_worm_green}
 						worm_max_len = 3
-						decos = {c_mycena}
+						decos = {c_mycena, c_firefly}
 					elseif n_biome_w < 0.33 then -- moss
 						floor = c_moss
 						worms = {c_worm_green, c_worm_blue}
