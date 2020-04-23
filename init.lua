@@ -2,7 +2,7 @@ caverealms = {} --create a container for functions and constants
 
 --grab a shorthand for the filepath of the mod
 local modpath = minetest.get_modpath(minetest.get_current_modname())
--- [[
+--[[
 -- debug privileges
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
@@ -166,24 +166,6 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local minposxyz = {x=x0, y=y0, z=z0} --bottom corner
 	local minposxz = {x=x0, y=z0} --2D bottom corner
 	
-	
-	--[[
-	wonder:   low    ------------->    high
-	
-	low-evil: algae moss lichen
-	mid-evil:  desert salt glacial
-	high-evil: hotsprings dungeon deep-glacial  
-	
-	
-	
-	deep-glacial: blue flame
-	desert: constant flame
-	
-	]]
-	
-	
-	
-	
 	local nvals_biome_e = minetest.get_perlin_map(np_biome_evil, chulens2D):get2dMap_flat({x=x0+150, y=z0+50}) --2D noise for biomes (will be 3D humidity/temp later)
 	local nvals_biome_w = minetest.get_perlin_map(np_biome_wonder, chulens2D):get2dMap_flat({x=x0+150, y=z0+50}) --2D noise for biomes (will be 3D humidity/temp later)
 	
@@ -247,20 +229,24 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					n_biome_e = n_biome_e + wiggle
 					n_biome_w = n_biome_w + wiggle
 					
+					
 					if n_biome_e < -0.33 then
 						if n_biome_w < -0.33 then -- algae
 							floor = c_algae
 							worms = {c_worm_green}
 							worm_max_len = 3
 							decos = {c_mycena}
+							if mode == 1 and data[ai] == c_air and math.random() < 0.03 then
+								data[ai] = c_firefly
+							end
 						elseif n_biome_w < 0.33 then -- moss
 							floor = c_moss
 							worms = {c_worm_green, c_worm_blue}
 							worm_max_len = 3
 							decos = {c_mycena}
 							deco_mul = 2.0
-							if mode == 1 and data[ai] == c_air and math.random() < 0.01 then
-								data[ai] = c_firefly
+							if mode == 1 and data[ai] == c_air and math.random() < 0.001 then
+								caverealms:grow_green_mushroom(x,y-1,z, area, data)
 							end
 						else -- lichen
 							floor = c_lichen
@@ -353,7 +339,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 						
 						-- salt crystals
 						if floor == c_salt and math.random() < SALTCRYCHA then
-							caverealms:salt_stalagmite(x,y,z, area, data)
+							caverealms:salt_stalagmite(x,y-1,z, area, data)
 						end
 						
 						-- stone stalagmites
@@ -391,7 +377,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 							end
 							
 							local base = floor
-							caverealms:crystal_stalagmite(x,y,z, area, data, ore, cry, base)
+							caverealms:crystal_stalagmite(x,y-1,z, area, data, ore, cry, base)
 						end
 						
 						

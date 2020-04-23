@@ -87,6 +87,55 @@ else
 	})
 end
 
+-- green mushroom
+-- cap
+minetest.register_node("caverealms:mushroom_cap_green", {
+	description = "Giant Mushroom Cap, Green",
+	tiles = {"caverealms_mushroom_cap_green.png"},
+	is_ground_content = true,
+	groups = {choppy=2, oddly_breakable_by_hand=1,},
+	light_source = 3,
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {"caverealms:mushroom_sapling_green"}, rarity = 20},
+			{items = {"caverealms:mushroom_cap_green"}}
+		}
+	},
+})
+minetest.register_node("caverealms:mushroom_cap_green_spots", {
+	description = "Giant Mushroom Cap, Green",
+	tiles = {"caverealms_mushroom_cap_green.png^caverealms_mushroom_cap_spots.png"},
+	is_ground_content = true,
+	groups = {choppy=2, oddly_breakable_by_hand=1,},
+	light_source = 3,
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {"caverealms:mushroom_sapling_green_spots"}, rarity = 20},
+			{items = {"caverealms:mushroom_cap_green"}}
+		}
+	},
+})
+
+-- sapling
+minetest.register_node("caverealms:mushroom_sapling_green", {
+	description = "Mushroom Tree Sapling, Green",
+	drawtype = "plantlike",
+	tiles = {"caverealms_mushroom_sapling_green.png"},
+	paramtype = "light",
+	sunlight_propagates = true,
+	is_ground_content = false,
+	walkable = false,
+	selection_box = {
+		type = "fixed",
+		fixed = {-4 / 16, -0.5, -4 / 16, 4 / 16, 7 / 16, 4 / 16}
+	},
+	groups = {snappy = 2, dig_immediate = 3, flammable = 2},
+	sounds = default.node_sound_leaves_defaults(),
+})
+
+
 -- gills
 minetest.register_node("caverealms:mushroom_gills", {
 	description = "Giant Mushroom Gills",
@@ -163,6 +212,45 @@ minetest.register_abm({
 		end
 	end,
 })
+
+
+-- green mushroom growth
+function caverealms:grow_green_mushroom(x,y,z, area, data)
+	local c_stem = minetest.get_content_id("caverealms:mushroom_stem")
+	local c_gills = minetest.get_content_id("caverealms:mushroom_gills")
+	local c_cap = minetest.get_content_id("caverealms:mushroom_cap_green")
+	local c_caps = minetest.get_content_id("caverealms:mushroom_cap_green_spots")
+
+	-- stem
+	local stop = {x=x,y=y+3,z=z}--{x = x+math.random(-1,1), y = y+3, z = z+math.random(-1,1)}
+	
+	for i = 1,3 do
+-- 		local vi = area:index(x+((stop.x-x) / i), y+i, z+((stop.z-z) / i))
+		local vi = area:index(x, y+i, z)
+		data[vi] = c_stem
+	end
+	
+	data[area:index(stop.x+1, y+3, stop.z)] = c_gills
+	data[area:index(stop.x-1, y+3, stop.z)] = c_gills
+	data[area:index(stop.x, y+3, stop.z+1)] = c_gills
+	data[area:index(stop.x, y+3, stop.z-1)] = c_gills
+	
+	data[area:index(stop.x+1, y+3, stop.z+1)] = c_cap
+	data[area:index(stop.x-1, y+3, stop.z+1)] = c_cap
+	data[area:index(stop.x+1, y+3, stop.z-1)] = c_cap
+	data[area:index(stop.x-1, y+3, stop.z-1)] = c_caps
+	data[area:index(stop.x+2, y+3, stop.z)] = c_cap
+	data[area:index(stop.x-2, y+3, stop.z)] = c_cap
+	data[area:index(stop.x, y+3, stop.z+2)] = c_caps
+	data[area:index(stop.x, y+3, stop.z-2)] = c_cap
+	data[area:index(stop.x+1, y+4, stop.z)] = c_caps
+	data[area:index(stop.x-1, y+4, stop.z)] = c_cap
+	data[area:index(stop.x, y+4, stop.z+1)] = c_caps
+	data[area:index(stop.x, y+4, stop.z-1)] = c_cap
+	data[area:index(stop.x, y+4, stop.z)] = c_cap
+	
+	
+end
 
 
 -- spread moss/lichen/algae to nearby cobblestone
