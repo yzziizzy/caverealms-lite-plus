@@ -21,7 +21,7 @@ end
 
 --generation settings
 setting("number", "ymin", -33000) --bottom realm limit
-setting("number", "ymax", -200) --top realm limit
+setting("number", "ymax", -50) --top realm limit
 setting("number", "tcave", 0.75) --cave threshold
 
 --decoration chances

@@ -112,10 +112,16 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	--grab content IDs
 	local c_air = minetest.get_content_id("air")
 	local c_stone = minetest.get_content_id("default:stone")
+	local c_desertstone = minetest.get_content_id("default:desert_stone")
+	local c_sandstone = minetest.get_content_id("default:sandstone")
+	local c_obsidian = minetest.get_content_id("default:obsidian")
+	local c_sand = minetest.get_content_id("default:sand")
 	
 	local c_water = minetest.get_content_id("default:water_source")
 	local c_lava = minetest.get_content_id("default:lava_source")
 	local c_ice = minetest.get_content_id("default:ice")
+	local c_ice = minetest.get_content_id("default:sand")
+	local c_ice = minetest.get_content_id("default:silver_sand")
 	local c_thinice = minetest.get_content_id("caverealms:thin_ice")
 	local c_crystal = minetest.get_content_id("caverealms:glow_crystal")
 	local c_gem = minetest.get_content_id("caverealms:glow_gem")
@@ -158,6 +164,31 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local c_amethore = minetest.get_content_id("caverealms:glow_amethyst_ore")
 	local c_hotspring = minetest.get_content_id("caverealms:hotspring_water_source")
 
+
+	local stone_nodes = {
+		[c_stone] = 1,
+		[c_desertstone] = 1,
+		[c_sandstone] = 1,
+		[c_coalblock] = 1,
+		[c_sand] = 1,
+		[c_desand] = 1,
+		[c_obsidian] = 1,
+	}
+	
+	if nil ~= minetest.get_modpath("geology") then
+		stone_nodes[minetest.get_content_id("geology:gneiss")] = 1
+		stone_nodes[minetest.get_content_id("geology:slate")] = 1
+		stone_nodes[minetest.get_content_id("geology:jade")] = 1
+		stone_nodes[minetest.get_content_id("geology:granite")] = 1
+		stone_nodes[minetest.get_content_id("geology:marble")] = 1
+		stone_nodes[minetest.get_content_id("geology:basalt")] = 1
+		stone_nodes[minetest.get_content_id("geology:chalk")] = 1
+		stone_nodes[minetest.get_content_id("geology:ors")] = 1
+		stone_nodes[minetest.get_content_id("geology:serpentine")] = 1
+		stone_nodes[minetest.get_content_id("geology:shale")] = 1
+		stone_nodes[minetest.get_content_id("geology:schist")] = 1
+		stone_nodes[minetest.get_content_id("geology:anthracite")] = 1
+	end
 	
 	--mandatory values
 	local sidelen = x1 - x0 + 1 --length of a mapblock
@@ -198,9 +229,9 @@ minetest.register_on_generated(function(minp, maxp, seed)
 				local mode = 0 -- nothing, 1 = ground, 2 = ceiling
 				
 				if data[vi] == c_air then
-					if data[bi] == c_stone then --ground
+					if stone_nodes[data[bi]] ~= nil then --ground
 						mode = 1
-					elseif data[ai] == c_stone and y < y1 then -- ceiling
+					elseif stone_nodes[data[bi]] ~= nil and y < y1 then -- ceiling
 						mode = 2
 					end
 				end
@@ -327,7 +358,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 					if mode == 1 then --ground
 						for i = 1,floor_depth do
 							local ii = area:index(x,y-i,z)
-							if data[ii] == c_stone then
+							if stone_nodes[data[bi]] ~= nil then
 								data[ii] = floor
 							end
 						end
